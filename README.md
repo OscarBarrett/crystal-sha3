@@ -3,7 +3,7 @@ A SHA-3 implementation written in Crystal.
 
 Supports:
 - The FIPS 202 SHA-3 standard (`Digest::SHA3`)
-- Keccak[3] (`Digest::Keccak3`)
+- Keccak\[3\] (`Digest::Keccak3`)
 
 The main difference between the two is the value of the first byte of padding set after the input in the buffer.
 For SHA-3, this byte is `6u8`. For Keccak[3] it is `1u8`.
