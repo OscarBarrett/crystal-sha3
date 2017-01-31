@@ -9,8 +9,17 @@ The main difference between the two is the value of the first byte of padding se
 For SHA-3, this byte is `6u8`. For Keccak[3] it is `1u8`.
 
 ## Usage
+Add the dependency to your `shard.yml`:
+```yaml
+dependencies:
+  sha3:
+    github: OscarBarrett/crystal-sha3
+    version: ~> 0.1
 ```
-require "digest/sha3"
+
+Then in your code:
+```crystal
+require "sha3"
 ```
 
 **SHA-3**
