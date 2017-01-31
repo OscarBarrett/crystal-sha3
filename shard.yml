@@ -1,0 +1,10 @@
+name: 'crystal-sha3'
+version: 0.1.0
+license: MIT
+authors:
+  - Oscar Barrett
+
+development_dependencies:
+  spec2:
+    github: waterlink/spec2.cr
+    version: ~> 0.9
