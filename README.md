@@ -14,7 +14,7 @@ require "digest/sha3"
 ```
 
 **SHA-3**
-```
+```crystal
 # Defaults to SHA3-512
 Digest::SHA3.hexdigest("abc123")
 # => 3274f8455be84b8c7d79f9bd93e6c8520d13f6bd2855f3bb9c006ca9f3cce25d4b924d0370f8af4e27a350fd2baeef58bc37e0f4e4a403fe64c98017fa012757
@@ -26,7 +26,7 @@ digest.hexdigest
 ```
 
 **Keccak3**
-```
+```crystal
 # Defaults to a hash size of 512
 Digest::Keccak3.hexdigest("abc123")
 # => 17c4bf22aaa8fcd7ff070fd3435619b5666dc3eac901872c73f091d9f3753cd871161269f14741e3b263c616e9f4bb4314abcbb271b2796d14eb89434a0afd03
@@ -40,7 +40,7 @@ digest.hexdigest
 ## Running specs
 Currently KAT specs are generated and not stored in this repository.
 
-```
+```bash
 make spec
 crystal spec
 ```
