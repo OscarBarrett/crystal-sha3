@@ -1,7 +1,7 @@
 require "base64"
 
 # Defines the padding to use based on the SHA-3 function domain.
-class Domain
+private class Domain
   SHA3  = 6u8
   SHAKE = 1u8 # Keccak[3]
 end
@@ -64,6 +64,7 @@ class Digest::SHA3
     @size = UInt32.new(hash_size / 8)
   end
 
+  # Ruby-style method names
   def update(s : String)
     update(s.to_slice)
   end
@@ -71,6 +72,11 @@ class Digest::SHA3
   def update(s : Bytes)
     @input = s
     self
+  end
+
+  # Crystal-style method name
+  def input(s)
+    update(s)
   end
 
   def reset
