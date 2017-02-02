@@ -1,4 +1,5 @@
-# crystal-sha3
+# crystal-sha3 [![Build Status](https://travis-ci.org/OscarBarrett/crystal-sha3.svg?branch=master)](https://travis-ci.org/OscarBarrett/crystal-sha3)
+
 A SHA-3 implementation written in Crystal.
 
 Supports:
