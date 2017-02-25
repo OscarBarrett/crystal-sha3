@@ -15,7 +15,7 @@ Add the dependency to your `shard.yml`:
 dependencies:
   sha3:
     github: OscarBarrett/crystal-sha3
-    version: ~> 0.1
+    version: ~> 0.2
 ```
 
 Then in your code:
