@@ -38,7 +38,7 @@ module KATSpecGenerator
           if length % 8 == 0
             update_param = %{""}
             if length != 0
-              update_param = %{to_hex_bytes("#{[lines[1].split(" = ").last][0]}")}
+              update_param = %{"#{[lines[1].split(" = ").last][0]}".hexbytes}
             end
 
             md = lines[2].split(" = ").last.downcase
