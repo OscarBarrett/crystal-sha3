@@ -60,7 +60,7 @@ class Digest::SHA3
     end
 
     @input = uninitialized Bytes
-    @buffer = Slice(UInt32).new(25)
+    @buffer = Pointer(UInt32).malloc(25_u32)
     @size = UInt32.new(hash_size / 8)
   end
 
@@ -85,7 +85,7 @@ class Digest::SHA3
   end
 
   def result
-    state = Slice(UInt64).new(25)
+    state = Pointer(UInt64).malloc(25_u64)
     width = 200 - @size * 2
 
     padding_size  = width - @input.size % width
@@ -116,11 +116,11 @@ class Digest::SHA3
     end
 
     # Return the result
-    state.to_unsafe.as(UInt8*).to_slice(@size)
+    state.as(UInt8*).to_slice(@size)
   end
 
-  private def keccak(state : Slice(UInt64))
-    lanes = Slice(UInt64).new(5)
+  private def keccak(state : Pointer(UInt64))
+    lanes = Pointer(UInt64).malloc(5_u64)
 
     24.times do |round|
       # Theta
