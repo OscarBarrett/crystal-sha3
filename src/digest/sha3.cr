@@ -149,11 +149,7 @@ class Digest::SHA3
 
       # Chi
       (0..24).step(5) do |j|
-        lanes[0] = state[j    ]
-        lanes[1] = state[j + 1]
-        lanes[2] = state[j + 2]
-        lanes[3] = state[j + 3]
-        lanes[4] = state[j + 4]
+        lanes.copy_from(state + j, 5)
         state[j    ] ^= (~lanes[1]) & lanes[2]
         state[j + 1] ^= (~lanes[2]) & lanes[3]
         state[j + 2] ^= (~lanes[3]) & lanes[4]
@@ -167,7 +163,7 @@ class Digest::SHA3
   end
 
   private def rotl64(x : UInt64, y : Int32)
-    (x << y | x >> 64 - y) & (1 << 64) - 1
+    (x << y | x >> 64 - y)
   end
 end
 
