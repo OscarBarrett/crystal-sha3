@@ -92,7 +92,7 @@ class Digest::SHA3
     buffer_size   = @input.size + padding_size
 
     # Initialize and fill buffer with the input string
-    buffer = Slice(UInt8).new(buffer_size)
+    buffer = Pointer(UInt8).malloc(buffer_size)
     buffer.copy_from(@input.pointer(0), @input.size)
 
     # Set the first padded bit
@@ -100,16 +100,15 @@ class Digest::SHA3
     buffer[@input.size] = {% begin %}{{@type.id}}::DOMAIN{% end %}
 
     # Zero-pad the buffer up to the message width
-    (buffer.to_unsafe + @input.size + 1).clear(padding_size)
+    (buffer + @input.size + 1).clear(padding_size)
 
     # Set the final bit of padding to 0x80
     buffer[buffer_size-1] = (buffer[buffer_size-1] | 0x80)
 
     state_size = width / 8
     (0..buffer_size-1).step(width) do |j|
-      quads = buffer[j, width].to_unsafe.as(UInt64*).to_slice(state_size)
       state_size.times do |i|
-        state[i] ^= quads[i]
+        state[i] ^= (buffer + j).as(UInt64*)[i]
       end
 
       keccak(state)
