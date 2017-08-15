@@ -1,4 +1,6 @@
-.shards
-lib
-spec/generated/*
-tmp
+/.shards
+/benchmarks/generated/*
+/benchmarks/sha3
+/lib
+/spec/generated/*
+/tmp

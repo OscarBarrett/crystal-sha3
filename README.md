@@ -60,7 +60,5 @@ ExtremelyLongMsg KAT data for Keccak is included in the repo but is not tested.
 LongMsg KAT data for SHA3 has not been located but should be added if a suitable source is found.
 
 ## Benchmarks
-Coming soon
+Run using `make benchmark`. Ruby and bundler are required dependencies.
 
-## Other comments
-As of the 0.1.0 release, the SHA3 code has not been optimised. There are likely several performance improvements that can be made.
