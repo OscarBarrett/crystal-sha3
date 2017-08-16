@@ -33,28 +33,6 @@ class Digest::SHA3
 
   DOMAIN = Domain::SHA3
 
-  RNDC = UInt64.static_array(
-    0x0000000000000001, 0x0000000000008082, 0x800000000000808a,
-    0x8000000080008000, 0x000000000000808b, 0x0000000080000001,
-    0x8000000080008081, 0x8000000000008009, 0x000000000000008a,
-    0x0000000000000088, 0x0000000080008009, 0x000000008000000a,
-    0x000000008000808b, 0x800000000000008b, 0x8000000000008089,
-    0x8000000000008003, 0x8000000000008002, 0x8000000000000080,
-    0x000000000000800a, 0x800000008000000a, 0x8000000080008081,
-    0x8000000000008080, 0x0000000080000001, 0x8000000080008008
-  )
-
-  # No longer used due to Rho Pi being unrolled.
-  # ROTC = Int32.static_array(
-  #   1,  3,  6,  10, 15, 21, 28, 36, 45, 55, 2,  14,
-  #   27, 41, 56, 8,  25, 43, 62, 18, 39, 61, 20, 44
-  # )
-  #
-  # PILN = Int32.static_array(
-  #   10, 7,  11, 17, 18, 3, 5,  16, 8,  21, 24, 4,
-  #   15, 23, 19, 13, 12, 2, 20, 14, 22, 9,  6,  1
-  # )
-
   def initialize(hash_size = 512)
     unless HASH_SIZES.includes? hash_size
       raise "Invalid hash size: #{hash_size}. Must be one of #{HASH_SIZES.join(',')}"
@@ -122,75 +100,87 @@ class Digest::SHA3
   private def keccak(state : Pointer(UInt64))
     lanes = Pointer(UInt64).malloc(5_u64)
 
-    24.times do |round|
-      # Theta
-      lanes[0] = state[0] ^ state[5] ^ state[10] ^ state[15] ^ state[20]
-      lanes[1] = state[1] ^ state[6] ^ state[11] ^ state[16] ^ state[21]
-      lanes[2] = state[2] ^ state[7] ^ state[12] ^ state[17] ^ state[22]
-      lanes[3] = state[3] ^ state[8] ^ state[13] ^ state[18] ^ state[23]
-      lanes[4] = state[4] ^ state[9] ^ state[14] ^ state[19] ^ state[24]
-
-      (0..4).each do |i|
-        t = lanes[(i + 4) % 5] ^ rotl64(lanes[(i + 1) % 5], 1)
-        state[i     ] ^= t
-        state[i +  5] ^= t
-        state[i + 10] ^= t
-        state[i + 15] ^= t
-        state[i + 20] ^= t
-      end
-
-      # Rho Pi
-      # The below loop, unrolled. > 40% faster
-      # t = state[1]
-      # 24.times do |i|
-      #   lanes[0] = state[PILN[i]]
-      #   state[PILN[i]] = rotl64(t, ROTC[i])
-      #   t = lanes[0]
-      # end
-
-      s1 = state[1]
-      state[1]  = rotl64(state[6], 44)
-      state[6]  = rotl64(state[9], 20)
-      state[9]  = rotl64(state[22], 61)
-      state[22] = rotl64(state[14], 39)
-      state[14] = rotl64(state[20], 18)
-      state[20] = rotl64(state[2], 62)
-      state[2]  = rotl64(state[12], 43)
-      state[12] = rotl64(state[13], 25)
-      state[13] = rotl64(state[19], 8)
-      state[19] = rotl64(state[23], 56)
-      state[23] = rotl64(state[15], 41)
-      state[15] = rotl64(state[4], 27)
-      state[4]  = rotl64(state[24], 14)
-      state[24] = rotl64(state[21], 2)
-      state[21] = rotl64(state[8], 55)
-      state[8]  = rotl64(state[16], 45)
-      state[16] = rotl64(state[5], 36)
-      state[5]  = rotl64(state[3], 28)
-      state[3]  = rotl64(state[18], 21)
-      state[18] = rotl64(state[17], 15)
-      state[17] = rotl64(state[11], 10)
-      state[11] = rotl64(state[7], 6)
-      state[7]  = rotl64(state[10], 3)
-      state[10] = rotl64(s1, 1)
-
-      # Chi
-      (0..24).step(5) do |j|
-        lanes.copy_from(state + j, 5)
-        state[j    ] ^= (~lanes[1]) & lanes[2]
-        state[j + 1] ^= (~lanes[2]) & lanes[3]
-        state[j + 2] ^= (~lanes[3]) & lanes[4]
-        state[j + 3] ^= (~lanes[4]) & lanes[0]
-        state[j + 4] ^= (~lanes[0]) & lanes[1]
-      end
-
-      # Iota
-      state[0] ^= RNDC[round]
-    end
+    macro_keccak
   end
 
   private def rotl64(x : UInt64, y : Int32)
     (x << y | x >> 64 - y)
+  end
+
+
+  private macro macro_keccak
+    {% for round in (0..23) %}
+      theta
+      rho_pi
+      chi
+      iota({{round}})
+    {% end %}
+  end
+
+  private macro theta
+    lanes[0] = state[0] ^ state[5] ^ state[10] ^ state[15] ^ state[20]
+    lanes[1] = state[1] ^ state[6] ^ state[11] ^ state[16] ^ state[21]
+    lanes[2] = state[2] ^ state[7] ^ state[12] ^ state[17] ^ state[22]
+    lanes[3] = state[3] ^ state[8] ^ state[13] ^ state[18] ^ state[23]
+    lanes[4] = state[4] ^ state[9] ^ state[14] ^ state[19] ^ state[24]
+
+    {% for i in (0..4) %}
+      t = lanes[{{(i + 4) % 5}}] ^ rotl64(lanes[{{(i + 1) % 5}}], 1)
+      state[{{i     }}] ^= t
+      state[{{i +  5}}] ^= t
+      state[{{i + 10}}] ^= t
+      state[{{i + 15}}] ^= t
+      state[{{i + 20}}] ^= t
+    {% end %}
+  end
+
+  private macro rho_pi
+    # The reverse of their usual order so that this loop can be optimised a bit.
+    {%
+      rotc = [
+        44, 20, 61, 39, 18, 62, 43, 25, 8,  56, 41, 27,
+        14, 2,  55, 45, 36, 28, 21, 15, 10, 6,  3,  1
+      ]
+      piln = [
+        1, 6,  9,  22, 14, 20, 2, 12, 13, 19, 23, 15,
+        4, 24, 21, 8,  16, 5,  3, 18, 17, 11, 7,  10
+      ]
+    %}
+
+    s1 = state[1]
+    {% for i in (0..23) %}
+      {% if i < 23 %}
+        state[{{piln[i]}}] = rotl64(state[{{piln[i + 1]}}], {{rotc[i]}})
+      {% else %}
+        state[{{piln[i]}}] = rotl64(s1, {{rotc[i]}})
+      {% end %}
+    {% end %}
+  end
+
+  private macro chi
+    # Loop for (0..24).step(5)
+    {% for i in [0, 5, 10, 15, 20] %}
+      lanes.copy_from(state + {{i}}, 5)
+      state[{{i    }}] ^= (~lanes[1]) & lanes[2]
+      state[{{i + 1}}] ^= (~lanes[2]) & lanes[3]
+      state[{{i + 2}}] ^= (~lanes[3]) & lanes[4]
+      state[{{i + 3}}] ^= (~lanes[4]) & lanes[0]
+      state[{{i + 4}}] ^= (~lanes[0]) & lanes[1]
+    {% end %}
+  end
+
+  private macro iota(round)
+    {% rndc = [
+      0x0000000000000001, 0x0000000000008082, 0x800000000000808a,
+      0x8000000080008000, 0x000000000000808b, 0x0000000080000001,
+      0x8000000080008081, 0x8000000000008009, 0x000000000000008a,
+      0x0000000000000088, 0x0000000080008009, 0x000000008000000a,
+      0x000000008000808b, 0x800000000000008b, 0x8000000000008089,
+      0x8000000000008003, 0x8000000000008002, 0x8000000000000080,
+      0x000000000000800a, 0x800000008000000a, 0x8000000080008081,
+      0x8000000000008080, 0x0000000080000001, 0x8000000080008008
+    ] %}
+    state[0] ^= {{rndc[round]}}
   end
 end
 
