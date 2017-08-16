@@ -7,18 +7,14 @@ private class Domain
 end
 
 class Digest::SHA3
-  def self.digest(string : String) : Bytes
-    digest(string.to_slice)
-  end
-
-  def self.digest(slice : Bytes) : Bytes
+  def self.digest(string_or_bytes : String | Bytes) : Bytes
     context = self.new
-    context.update(slice)
+    context.update(string_or_bytes)
     context.result
   end
 
   def self.hexdigest(string_or_slice : String | Bytes) : String
-    digest(string_or_slice).to_slice.hexstring
+    digest(string_or_slice).hexstring
   end
 
   def self.base64digest(string_or_slice : String | Bytes) : String
@@ -26,7 +22,7 @@ class Digest::SHA3
   end
 
   def hexdigest : String
-    result.to_slice.hexstring
+    result.hexstring
   end
 
   HASH_SIZES = Int32.static_array(224, 256, 384, 512)
