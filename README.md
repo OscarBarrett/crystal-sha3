@@ -1,6 +1,6 @@
 # crystal-sha3 [![Build Status](https://travis-ci.org/OscarBarrett/crystal-sha3.svg?branch=master)](https://travis-ci.org/OscarBarrett/crystal-sha3)
 
-A SHA-3 implementation written in Crystal.
+An SHA-3 implementation written in Crystal.
 
 Supports:
 - The FIPS 202 SHA-3 standard (`Digest::SHA3`)
@@ -15,7 +15,7 @@ Add the dependency to your `shard.yml`:
 dependencies:
   sha3:
     github: OscarBarrett/crystal-sha3
-    version: ~> 0.2
+    version: ~> 0.3
 ```
 
 Then in your code:
