@@ -60,7 +60,15 @@ ExtremelyLongMsg KAT data for Keccak is included in the repo but is not tested.
 LongMsg KAT data for SHA3 has not been located but should be added if a suitable source is found.
 
 ## Benchmarks
-Coming soon
+256,000 hashes:
 
-## Other comments
-As of the 0.1.0 release, the SHA3 code has not been optimised. There are likely several performance improvements that can be made.
+| Version | Time | Comparison |
+| ------- | ---- | ---------- |
+| [Ruby (uses a C binding)](https://github.com/phusion/digest-sha3-ruby) |   7.320000 0.080000 7.400000 ( 7.399895) | |
+| Unreleased | 6.300000   2.540000   8.840000 (  7.068621) | 1.05 times faster |
+
+Benchmarks can be run using `make benchmark`.
+
+To compare with the Ruby [sha3](https://github.com/johanns/sha3) gem (which uses a C binding), run:    
+```make benchmark-compare```    
+Ruby and bundler are required dependencies.
