@@ -64,8 +64,8 @@ LongMsg KAT data for SHA3 has not been located but should be added if a suitable
 
 | Version | Time | Comparison |
 | ------- | ---- | ---------- |
-| [Ruby (uses a C binding)](https://github.com/phusion/digest-sha3-ruby) |   7.320000 0.080000 7.400000 ( 7.399895) | |
-| Unreleased | 6.300000   2.540000   8.840000 (  7.068621) | 1.05 times faster |
+| [Ruby (uses a C binding)](https://github.com/johanns/sha3) |   7.320000 0.080000 7.400000 ( 7.399895) | |
+| [v0.3.0](https://github.com/OscarBarrett/crystal-sha3/tree/v0.3.0) | 6.300000   2.540000   8.840000 (  7.068621) | 1.05 times faster |
 
 Benchmarks can be run using `make benchmark`.
 
