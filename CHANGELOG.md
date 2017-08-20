@@ -16,7 +16,7 @@
 - Switched to using the built in String.hexbytes method added in Crystal 0.21.0.
 
 
-## [0.1.1] - 2017-02-25
+## [0.1.1] - 2017-02-02
 ### Added
 - Added crystal-style method name for updating the string to be hashed (based on Digest::SHA1).
 - Added .travis.yml
@@ -26,7 +26,7 @@
 - Updated shard.yml a little bit, and bumped the patch version.
 
 
-## 0.1.0 - 2017-02-25
+## 0.1.0 - 2017-01-31
 - Initial release
 
 
