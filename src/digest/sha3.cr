@@ -35,7 +35,6 @@ class Digest::SHA3
     end
 
     @input = uninitialized Bytes
-    @buffer = Pointer(UInt32).malloc(25_u32)
     @size = UInt32.new(hash_size / 8)
   end
 
@@ -55,7 +54,7 @@ class Digest::SHA3
   end
 
   def reset
-    @buffer.clear
+    @input.clear
     self
   end
 
@@ -156,12 +155,14 @@ class Digest::SHA3
   private macro chi
     # Loop for (0..24).step(5)
     {% for i in [0, 5, 10, 15, 20] %}
-      lanes.copy_from(state + {{i}}, 5)
-      state[{{i    }}] ^= (~lanes[1]) & lanes[2]
-      state[{{i + 1}}] ^= (~lanes[2]) & lanes[3]
-      state[{{i + 2}}] ^= (~lanes[3]) & lanes[4]
-      state[{{i + 3}}] ^= (~lanes[4]) & lanes[0]
-      state[{{i + 4}}] ^= (~lanes[0]) & lanes[1]
+      state_i   = state[{{i    }}]
+      state_i_1 = state[{{i + 1}}]
+
+      state[{{i    }}] ^= (~state_i_1)        & state[{{i + 2}}]
+      state[{{i + 1}}] ^= (~state[{{i + 2}}]) & state[{{i + 3}}]
+      state[{{i + 2}}] ^= (~state[{{i + 3}}]) & state[{{i + 4}}]
+      state[{{i + 3}}] ^= (~state[{{i + 4}}]) & state_i
+      state[{{i + 4}}] ^= (~state_i)          & state_i_1
     {% end %}
   end
 
