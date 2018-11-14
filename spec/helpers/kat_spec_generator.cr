@@ -8,10 +8,8 @@ module KATSpecGenerator
     print "Clearing target directory..."
     Dir.mkdir TARGET_DIR unless File.exists?(TARGET_DIR)
 
-    Dir.foreach(TARGET_DIR) do |path|
-      next if path =~ /^\./
-
-      File.delete("#{TARGET_DIR}/#{path}")
+    Dir[TARGET_DIR + "/*"].each do |path|
+      File.delete("#{path}")
     end
 
     puts "done"
@@ -20,16 +18,15 @@ module KATSpecGenerator
   def self.generate(data_dir, digest_klass)
     print "Generating KAT specs for Digest::#{digest_klass}..."
 
-    Dir.foreach(data_dir) do |path|
-      next if path =~ /^\./
-      next if path =~ /^ExtremelyLongMsg/ # Skipped for now.
+    Dir[data_dir + "/*"].each do |path|
+      next if path =~ /ExtremelyLongMsg/ # Skipped for now.
 
-      name = path.split('.')[0]
+      name = File.basename path, ".txt"
       hash_length = path.split('_')[1].split('.')[0]
 
       test_content = String.new
 
-      contents = File.read("#{data_dir}/#{path}").split("Len = ")
+      contents = File.read("#{path}").split("Len = ")
       contents.each do |test|
         lines = test.split("\n")
 
@@ -44,7 +41,7 @@ module KATSpecGenerator
             md = lines[2].split(" = ").last.downcase
             test_name = "test_#{name}_#{length}"
 
-            #define_test(test_name, hash_length, msg_raw, md)
+            # define_test(test_name, hash_length, msg_raw, md)
             test_content += <<-EOL
               it "passes for length #{length}" do
                 inst = Digest::#{digest_klass}.new(#{hash_length}_u32)
@@ -72,7 +69,7 @@ module KATSpecGenerator
         EOL
 
         # Write the test content to file
-        File.write("#{TARGET_DIR}/#{digest_klass}_#{name}_spec.cr", test_content)
+        File.write(p("#{TARGET_DIR}/#{digest_klass}_#{name}_spec.cr"), test_content)
       end
     end
 
@@ -82,4 +79,4 @@ end
 
 KATSpecGenerator.clear_target_dir
 KATSpecGenerator.generate "spec/kat_data/keccak3", "Keccak3"
-KATSpecGenerator.generate "spec/kat_data/sha3",    "SHA3"
+KATSpecGenerator.generate "spec/kat_data/sha3", "SHA3"
