@@ -1,3 +1,3 @@
 language: crystal
 
-before_script: make spec
+before_script: crystal run spec/helpers/kat_spec_generator.cr
