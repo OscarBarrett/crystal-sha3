@@ -10,7 +10,7 @@ module BenchmarkGenerator
   def self.clear_target_dir
     Dir.mkdir TARGET_DIR unless File.exists?(TARGET_DIR)
 
-    Dir.foreach(TARGET_DIR) do |path|
+    Dir.each_child(TARGET_DIR) do |path|
       next if path =~ /^\./
 
       File.delete("#{TARGET_DIR}/#{path}")

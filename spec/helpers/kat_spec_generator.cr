@@ -8,7 +8,7 @@ module KATSpecGenerator
     print "Clearing target directory..."
     Dir.mkdir TARGET_DIR unless File.exists?(TARGET_DIR)
 
-    Dir.foreach(TARGET_DIR) do |path|
+    Dir.each_child(TARGET_DIR) do |path|
       next if path =~ /^\./
 
       File.delete("#{TARGET_DIR}/#{path}")
@@ -20,7 +20,7 @@ module KATSpecGenerator
   def self.generate(data_dir, digest_klass)
     print "Generating KAT specs for Digest::#{digest_klass}..."
 
-    Dir.foreach(data_dir) do |path|
+    Dir.each_child(data_dir) do |path|
       next if path =~ /^\./
       next if path =~ /^ExtremelyLongMsg/ # Skipped for now.
 
