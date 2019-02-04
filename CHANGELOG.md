@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [0.3.1] - 2019-02-04
+### Changed
+- Fix: Use Dir.each_child in place of Dir.foreach (#4)
+- Don't use make in travis
 
 ## [0.3.0] - 2017-08-21
 ### Added
@@ -30,7 +34,8 @@
 - Initial release
 
 
-[Unreleased]: https://github.com/TheLeagueAU/wordpress-sentry/compare/v0.3.0...HEAD
-[0.3.0]: https://github.com/TheLeagueAU/wordpress-sentry/compare/v0.2.0...v0.3.0
-[0.2.0]: https://github.com/TheLeagueAU/wordpress-sentry/compare/v0.1.1...v0.2.0
-[0.1.1]: https://github.com/TheLeagueAU/wordpress-sentry/compare/v0.1.0...v0.1.1
+[Unreleased]: https://github.com/OscarBarrett/crystal-sha3/compare/v0.3.1...HEAD
+[0.3.1]: https://github.com/OscarBarrett/crystal-sha3/compare/v0.3.0...v0.3.1
+[0.3.0]: https://github.com/OscarBarrett/crystal-sha3/compare/v0.2.0...v0.3.0
+[0.2.0]: https://github.com/OscarBarrett/crystal-sha3/compare/v0.1.1...v0.2.0
+[0.1.1]: https://github.com/OscarBarrett/crystal-sha3/compare/v0.1.0...v0.1.1
