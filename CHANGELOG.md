@@ -1,6 +1,11 @@
+<!-- markdownlint-disable blanks-around-headers blanks-around-lists no-duplicate-header -->
 # Changelog
 
 ## [Unreleased]
+
+## [0.3.2] - 2019-10-03
+### Changed
+- Fix: Remove usage of Slice#pointer, update Int#/ usage (#7)
 
 ## [0.3.1] - 2019-02-04
 ### Changed
@@ -14,11 +19,9 @@
 ### Changed
 - Significant performance improvements
 
-
 ## [0.2.0] - 2017-02-25
 ### Changed
 - Switched to using the built in String.hexbytes method added in Crystal 0.21.0.
-
 
 ## [0.1.1] - 2017-02-02
 ### Added
@@ -29,12 +32,11 @@
 - Made Domain class private
 - Updated shard.yml a little bit, and bumped the patch version.
 
-
 ## 0.1.0 - 2017-01-31
 - Initial release
 
-
-[Unreleased]: https://github.com/OscarBarrett/crystal-sha3/compare/v0.3.1...HEAD
+[Unreleased]: https://github.com/OscarBarrett/crystal-sha3/compare/v0.3.2...HEAD
+[0.3.2]: https://github.com/OscarBarrett/crystal-sha3/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/OscarBarrett/crystal-sha3/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/OscarBarrett/crystal-sha3/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/OscarBarrett/crystal-sha3/compare/v0.1.1...v0.2.0
