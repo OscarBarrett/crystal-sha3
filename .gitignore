@@ -1,6 +1,6 @@
 /.shards
 /benchmarks/generated/*
-/benchmarks/sha3
+/benchmarks/sha3*
 /lib
 /spec/generated/*
 /tmp

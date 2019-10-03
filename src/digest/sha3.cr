@@ -67,7 +67,7 @@ class Digest::SHA3
 
     # Initialize and fill buffer with the input string
     buffer = Pointer(UInt8).malloc(buffer_size)
-    buffer.copy_from(@input.pointer(0), @input.size)
+    buffer.copy_from(@input.to_unsafe, @input.size)
 
     # Set the first padded bit
     # Regarding the assignment: https://github.com/crystal-lang/crystal/issues/3241
@@ -79,7 +79,7 @@ class Digest::SHA3
     # Set the final bit of padding to 0x80
     buffer[buffer_size-1] = (buffer[buffer_size-1] | 0x80)
 
-    state_size = width / 8
+    state_size = width // 8
     (0..buffer_size-1).step(width) do |j|
       state_size.times do |i|
         state[i] ^= (buffer + j).as(UInt64*)[i]

@@ -1,2 +1,2 @@
 require "spec2"
-require "../digest/sha3"
+require "../src/digest/sha3"
